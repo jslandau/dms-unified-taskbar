@@ -2,6 +2,8 @@
 
 A [Dank Material Shell](https://danklinux.com) plugin that displays running applications grouped by workspace in pill-shaped containers on the DankBar.
 
+![Unified Taskbar screenshot](screenshot.png)
+
 ## Features
 
 - Windows organized by workspace in pill-shaped containers
