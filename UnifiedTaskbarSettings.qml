@@ -34,4 +34,11 @@ PluginSettings {
         description: "Show workspaces from all monitors instead of only the current one"
         defaultValue: false
     }
+
+    ToggleSetting {
+        settingKey: "reverseMonitorOrder"
+        label: "Reverse Monitor Order"
+        description: "Reverse the order in which monitors are displayed when showing all monitors"
+        defaultValue: false
+    }
 }

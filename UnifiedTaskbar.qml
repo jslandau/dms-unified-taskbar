@@ -41,6 +41,7 @@ PluginComponent {
     readonly property bool groupByApp: pluginData.groupByApp ?? false
     readonly property bool compactMode: pluginData.compactMode ?? false
     readonly property bool allMonitors: pluginData.allMonitors ?? false
+    readonly property bool reverseMonitorOrder: pluginData.reverseMonitorOrder ?? false
 
     readonly property real iconCellSize: widgetThickness - ((barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((barConfig?.widgetPadding ?? 12) * (widgetThickness / 30), 1)) * 2
 
@@ -57,13 +58,45 @@ PluginComponent {
             } else {
                 workspaces = NiriService.allWorkspaces.filter(ws => ws.output === root.effectiveScreenName);
             }
+            if (root.allMonitors && root.reverseMonitorOrder) {
+                // Group by output, reverse the groups, flatten back
+                const groups = [];
+                let currentOutput = null;
+                let currentGroup = [];
+                for (const ws of workspaces) {
+                    if (ws.output !== currentOutput) {
+                        if (currentGroup.length > 0) groups.push(currentGroup);
+                        currentGroup = [];
+                        currentOutput = ws.output;
+                    }
+                    currentGroup.push(ws);
+                }
+                if (currentGroup.length > 0) groups.push(currentGroup);
+                groups.reverse();
+                workspaces = groups.flat();
+            }
             return workspaces.length > 0 ? workspaces : [];
         } else if (CompositorService.isHyprland) {
-            return Array.from(Hyprland.workspaces?.values || []).filter(ws => {
+            const filtered = Array.from(Hyprland.workspaces?.values || []).filter(ws => {
                 if (ws.id < 0) return false;
                 if (!root.allMonitors && root.screenName && ws.monitor?.name !== root.effectiveScreenName) return false;
                 return true;
-            }).sort((a, b) => a.id - b.id);
+            });
+            if (root.allMonitors && root.reverseMonitorOrder) {
+                filtered.sort((a, b) => {
+                    const monCmp = (b.monitor?.name ?? "").localeCompare(a.monitor?.name ?? "");
+                    return monCmp !== 0 ? monCmp : a.id - b.id;
+                });
+            } else {
+                filtered.sort((a, b) => {
+                    if (root.allMonitors) {
+                        const monCmp = (a.monitor?.name ?? "").localeCompare(b.monitor?.name ?? "");
+                        if (monCmp !== 0) return monCmp;
+                    }
+                    return a.id - b.id;
+                });
+            }
+            return filtered;
         } else if (CompositorService.isDwl) {
             if (!DwlService.dwlAvailable) return [];
             const output = DwlService.getOutputState(root.effectiveScreenName);
@@ -84,10 +117,25 @@ PluginComponent {
             });
         } else if (CompositorService.isSway || CompositorService.isScroll || CompositorService.isMiracle) {
             const workspaces = I3.workspaces?.values || [];
-            return Array.from(workspaces).filter(ws => {
+            const filtered = Array.from(workspaces).filter(ws => {
                 if (!root.allMonitors && root.screenName && ws.output !== root.effectiveScreenName) return false;
                 return true;
-            }).sort((a, b) => (a.num ?? 0) - (b.num ?? 0));
+            });
+            if (root.allMonitors && root.reverseMonitorOrder) {
+                filtered.sort((a, b) => {
+                    const monCmp = (b.output ?? "").localeCompare(a.output ?? "");
+                    return monCmp !== 0 ? monCmp : (a.num ?? 0) - (b.num ?? 0);
+                });
+            } else {
+                filtered.sort((a, b) => {
+                    if (root.allMonitors) {
+                        const monCmp = (a.output ?? "").localeCompare(b.output ?? "");
+                        if (monCmp !== 0) return monCmp;
+                    }
+                    return (a.num ?? 0) - (b.num ?? 0);
+                });
+            }
+            return filtered;
         }
         return [];
     }
