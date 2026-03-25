@@ -42,6 +42,7 @@ PluginComponent {
     readonly property bool compactMode: pluginData.compactMode ?? false
     readonly property bool allMonitors: pluginData.allMonitors ?? false
     readonly property bool reverseMonitorOrder: pluginData.reverseMonitorOrder ?? false
+    readonly property bool filledPills: pluginData.filledPills ?? false
 
     readonly property real iconCellSize: widgetThickness - ((barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((barConfig?.widgetPadding ?? 12) * (widgetThickness / 30), 1)) * 2
 
@@ -215,9 +216,9 @@ PluginComponent {
                 }
             }
 
-            if (wsWindows.length === 0) continue;
-
             const isActive = isWorkspaceActive(ws);
+
+            if (wsWindows.length === 0 && !isActive) continue;
 
             let entries;
             if (root.groupByApp) {
@@ -422,10 +423,18 @@ PluginComponent {
 
                         width: innerLayout.implicitWidth + Theme.spacingS * 2
                         height: root.widgetThickness
-                        radius: Theme.cornerRadius * 1.5
-                        color: "transparent"
-                        border.width: isActive ? 2 : 1
-                        border.color: isActive ? Theme.primary : Theme.withAlpha(Theme.outline, 0.4)
+                        radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
+                        color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
+                        border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
+                        border.color: root.filledPills ? "transparent" : (isActive ? Theme.primary : Theme.withAlpha(Theme.outline, 0.4))
+
+                        Behavior on color {
+                            enabled: root.filledPills
+                            ColorAnimation {
+                                duration: Theme.mediumDuration
+                                easing.type: Theme.emphasizedEasing
+                            }
+                        }
 
                         MouseArea {
                             anchors.fill: parent
@@ -455,13 +464,14 @@ PluginComponent {
 
     verticalBarPill: Component {
         Item {
-            implicitWidth: root.iconCellSize
-            implicitHeight: Math.max(0, vLayout.implicitHeight - root._pillPadding * 2)
+            implicitWidth: root.widgetThickness
+            implicitHeight: vLayout.implicitHeight
 
             Column {
                 id: vLayout
-                spacing: Theme.spacingXS
-                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: Theme.spacingS
+                width: parent.width
+                anchors.verticalCenter: parent.verticalCenter
 
                 Repeater {
                     model: ScriptModel {
@@ -475,12 +485,21 @@ PluginComponent {
                         property var wsData: modelData
                         property bool isActive: wsData ? wsData.isActive : false
 
-                        width: root.iconCellSize
-                        height: innerLayoutV.implicitHeight + Theme.spacingS * 2
-                        radius: Theme.cornerRadius * 1.5
-                        color: "transparent"
-                        border.width: isActive ? 2 : 1
-                        border.color: isActive ? Theme.primary : Theme.withAlpha(Theme.outline, 0.4)
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: root.filledPills ? (root.widgetThickness - Theme.spacingS * 0.9) : root.iconCellSize
+                        height: root.filledPills ? Math.max(Math.round((root.iconCellSize + root.widgetThickness) / 2) + Theme.spacingS * 2, innerLayoutV.implicitHeight + Theme.spacingS * 2) : (innerLayoutV.implicitHeight + Theme.spacingS * 2)
+                        radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
+                        color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
+                        border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
+                        border.color: root.filledPills ? "transparent" : (isActive ? Theme.primary : Theme.withAlpha(Theme.outline, 0.4))
+
+                        Behavior on color {
+                            enabled: root.filledPills
+                            ColorAnimation {
+                                duration: Theme.mediumDuration
+                                easing.type: Theme.emphasizedEasing
+                            }
+                        }
 
                         MouseArea {
                             anchors.fill: parent
@@ -521,6 +540,17 @@ PluginComponent {
             property string appId: entryData ? entryData.appId : ""
             readonly property string effectiveAppId: appId
             property string windowTitle: toplevelData ? (toplevelData.title || "(Unnamed)") : "(Unnamed)"
+            property var coreAppData: {
+                if (appEntry.appId !== "org.quickshell" || !appEntry.windowTitle)
+                    return null;
+                const coreApps = AppSearchService.coreApps || [];
+                for (let i = 0; i < coreApps.length; i++) {
+                    if (coreApps[i].name === appEntry.windowTitle)
+                        return coreApps[i];
+                }
+                return null;
+            }
+            readonly property bool isCoreApp: coreAppData !== null
             property bool isFocused: {
                 if (!entryData) return false;
                 for (let i = 0; i < entryData.windows.length; i++) {
@@ -538,9 +568,10 @@ PluginComponent {
                 anchors.fill: parent
                 radius: Theme.cornerRadius * 1.5
                 color: {
-                    if (appEntry.isFocused) {
+                    if (root.filledPills)
+                        return entryMouseArea.containsMouse ? Theme.withAlpha(Theme.surfaceText, 0.15) : "transparent";
+                    if (appEntry.isFocused)
                         return entryMouseArea.containsMouse ? Theme.primarySelected : Theme.withAlpha(Theme.primary, 0.5);
-                    }
                     return entryMouseArea.containsMouse ? Theme.withAlpha(Theme.surfaceText, 0.15) : Theme.withAlpha(Theme.surfaceText, 0.07);
                 }
 
@@ -554,6 +585,8 @@ PluginComponent {
                     source: {
                         root._desktopEntriesUpdateTrigger;
                         root._appIdSubstitutionsTrigger;
+                        if (appEntry.isCoreApp && appEntry.coreAppData && appEntry.coreAppData.icon)
+                            return Quickshell.iconPath(appEntry.coreAppData.icon, true) || "";
                         if (!appEntry.effectiveAppId)
                             return "";
                         const desktopEntry = DesktopEntries.heuristicLookup(appEntry.effectiveAppId);
