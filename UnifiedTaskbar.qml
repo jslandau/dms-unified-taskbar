@@ -73,7 +73,7 @@ PluginComponent {
                 }
                 if (currentGroup.length > 0) groups.push(currentGroup);
                 groups.reverse();
-                workspaces = groups.flat();
+                workspaces = [].concat.apply([], groups);
             }
             return workspaces.length > 0 ? workspaces : [];
         } else if (CompositorService.isHyprland) {
