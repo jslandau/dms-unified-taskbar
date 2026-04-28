@@ -41,4 +41,11 @@ PluginSettings {
         description: "Reverse the order in which monitors are displayed when showing all monitors"
         defaultValue: false
     }
+
+    ToggleSetting {
+        settingKey: "filledPills"
+        label: "Filled Pills (Vertical)"
+        description: "Use solid filled workspace pills instead of outlined borders"
+        defaultValue: false
+    }
 }
