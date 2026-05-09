@@ -1,18 +1,10 @@
 import QtQuick
 import qs.Common
-import qs.Widgets
 import qs.Modules.Plugins
 
 PluginSettings {
+    id: root
     pluginId: "unifiedTaskbar"
-
-    StyledText {
-        width: parent.width
-        text: "Display"
-        font.pixelSize: Theme.fontSizeLarge
-        font.weight: Font.Bold
-        color: Theme.surfaceText
-    }
 
     ToggleSetting {
         settingKey: "compactMode"
@@ -47,5 +39,21 @@ PluginSettings {
         label: "Filled Pills (Vertical)"
         description: "Use solid filled workspace pills instead of outlined borders"
         defaultValue: false
+    }
+
+    SliderSetting {
+        settingKey: "iconPadding"
+        label: "Icon Padding"
+        minimum: 0
+        maximum: 20
+        defaultValue: 4
+    }
+
+    SliderSetting {
+        settingKey: "itemSpacing"
+        label: "Item Spacing"
+        minimum: 0
+        maximum: 20
+        defaultValue: 2
     }
 }
