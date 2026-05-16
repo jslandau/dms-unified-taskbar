@@ -424,8 +424,9 @@ PluginComponent {
                         property var wsData: modelData
                         property bool isActive: wsData ? wsData.isActive : false
 
-                        width: innerLayout.implicitWidth + root.iconPadding * 2
-                        height: root.widgetThickness
+                        readonly property real pillInset: Math.max(root.iconPadding, Theme.spacingXS)
+                        width: innerLayout.implicitWidth + pillInset * 2
+                        height: Math.max(root.widgetThickness, innerLayout.implicitHeight + pillInset * 2)
                         radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
                         color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
                         border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
@@ -490,7 +491,8 @@ PluginComponent {
 
                         anchors.horizontalCenter: parent.horizontalCenter
                         width: root.filledPills ? (root.widgetThickness - Theme.spacingS * 0.9) : root.iconCellSize
-                        height: root.filledPills ? Math.max(Math.round((root.iconCellSize + root.widgetThickness) / 2) + root.iconPadding * 2, innerLayoutV.implicitHeight + root.iconPadding * 2) : (innerLayoutV.implicitHeight + root.iconPadding * 2)
+                        readonly property real pillInset: Math.max(root.iconPadding, Theme.spacingXS)
+                        height: root.filledPills ? Math.max(Math.round((root.iconCellSize + root.widgetThickness) / 2) + pillInset * 2, innerLayoutV.implicitHeight + pillInset * 2) : (innerLayoutV.implicitHeight + pillInset * 2)
                         radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
                         color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
                         border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
@@ -563,8 +565,8 @@ PluginComponent {
             }
             readonly property real entryIconSize: Theme.barIconSize(root.barThickness, undefined, root.barConfig?.maximizeWidgetIcons, root.barConfig?.iconScale)
 
-            width: root.compactMode ? entryIconSize + root.itemSpacing * 2 : entryIconSize + root.itemSpacing * 3 + 120
-            height: entryIconSize + root.itemSpacing * 2
+            width: root.compactMode ? entryIconSize + root.iconPadding * 2 : entryIconSize + root.iconPadding * 3 + 120
+            height: Math.round((root.iconCellSize + root.widgetThickness) / 2)
 
             Rectangle {
                 id: entryBackground
@@ -581,7 +583,7 @@ PluginComponent {
                 IconImage {
                     id: appIcon
                     anchors.left: parent.left
-                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.itemSpacing
+                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter
                     width: appEntry.entryIconSize
                     height: appEntry.entryIconSize
@@ -603,7 +605,7 @@ PluginComponent {
 
                 DankIcon {
                     anchors.left: parent.left
-                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.itemSpacing
+                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter
                     size: appEntry.entryIconSize
                     name: "sports_esports"
@@ -628,7 +630,7 @@ PluginComponent {
 
                 StyledText {
                     anchors.left: appIcon.right
-                    anchors.leftMargin: root.itemSpacing
+                    anchors.leftMargin: root.iconPadding
                     anchors.right: parent.right
                     anchors.rightMargin: root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter

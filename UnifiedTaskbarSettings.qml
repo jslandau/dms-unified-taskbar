@@ -45,7 +45,7 @@ PluginSettings {
         settingKey: "iconPadding"
         label: "Icon Padding"
         minimum: 0
-        maximum: 20
+        maximum: 10
         defaultValue: 4
     }
 
@@ -53,7 +53,7 @@ PluginSettings {
         settingKey: "itemSpacing"
         label: "Item Spacing"
         minimum: 0
-        maximum: 20
+        maximum: 10
         defaultValue: 2
     }
 }
