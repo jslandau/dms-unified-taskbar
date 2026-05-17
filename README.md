@@ -21,6 +21,10 @@ A [Dank Material Shell](https://danklinux.com) plugin that displays running appl
 | Compact Mode | Show only app icons without window titles |
 | Group by App | Collapse multiple windows of the same app into one entry with a count badge |
 | Show All Monitors | Show workspaces from all monitors instead of only the current one |
+| Reverse Monitor Order | Reverse the order in which monitors are displayed when showing all monitors |
+| Filled Pills (Vertical) | Use solid filled workspace pills instead of outlined borders |
+| Icon Padding | Padding around the icon group inside each workspace pill. Set to 0 for a flush look |
+| Item Spacing | Spacing between individual app icons within a workspace |
 
 ## Installation
 
