@@ -44,6 +44,9 @@ PluginComponent {
     readonly property bool reverseMonitorOrder: pluginData.reverseMonitorOrder ?? false
     readonly property bool filledPills: pluginData.filledPills ?? false
 
+    readonly property real iconPadding: pluginData.iconPadding !== undefined ? pluginData.iconPadding : Theme.spacingS
+    readonly property real itemSpacing: pluginData.itemSpacing !== undefined ? pluginData.itemSpacing : Theme.spacingXS
+
     readonly property real iconCellSize: widgetThickness - ((barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((barConfig?.widgetPadding ?? 12) * (widgetThickness / 30), 1)) * 2
 
     property int _desktopEntriesUpdateTrigger: 0
@@ -406,7 +409,7 @@ PluginComponent {
 
             Row {
                 id: hLayout
-                spacing: Theme.spacingXS
+                spacing: root.itemSpacing
                 anchors.centerIn: parent
 
                 Repeater {
@@ -421,8 +424,9 @@ PluginComponent {
                         property var wsData: modelData
                         property bool isActive: wsData ? wsData.isActive : false
 
-                        width: innerLayout.implicitWidth + Theme.spacingS * 2
-                        height: root.widgetThickness
+                        readonly property real pillInset: Math.max(root.iconPadding, Theme.spacingXS)
+                        width: innerLayout.implicitWidth + pillInset * 2
+                        height: Math.max(root.widgetThickness, innerLayout.implicitHeight + pillInset * 2)
                         radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
                         color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
                         border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
@@ -446,7 +450,7 @@ PluginComponent {
                         Row {
                             id: innerLayout
                             anchors.centerIn: parent
-                            spacing: Theme.spacingXS
+                            spacing: root.itemSpacing
 
                             Repeater {
                                 model: ScriptModel {
@@ -469,7 +473,7 @@ PluginComponent {
 
             Column {
                 id: vLayout
-                spacing: Theme.spacingS
+                spacing: root.iconPadding
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
 
@@ -487,7 +491,8 @@ PluginComponent {
 
                         anchors.horizontalCenter: parent.horizontalCenter
                         width: root.filledPills ? (root.widgetThickness - Theme.spacingS * 0.9) : root.iconCellSize
-                        height: root.filledPills ? Math.max(Math.round((root.iconCellSize + root.widgetThickness) / 2) + Theme.spacingS * 2, innerLayoutV.implicitHeight + Theme.spacingS * 2) : (innerLayoutV.implicitHeight + Theme.spacingS * 2)
+                        readonly property real pillInset: Math.max(root.iconPadding, Theme.spacingXS)
+                        height: root.filledPills ? Math.max(Math.round((root.iconCellSize + root.widgetThickness) / 2) + pillInset * 2, innerLayoutV.implicitHeight + pillInset * 2) : (innerLayoutV.implicitHeight + pillInset * 2)
                         radius: root.filledPills ? Theme.cornerRadius : Theme.cornerRadius * 1.5
                         color: root.filledPills ? (isActive ? Theme.primary : Theme.surfaceTextAlpha) : "transparent"
                         border.width: root.filledPills ? 0 : (isActive ? 2 : 1)
@@ -511,7 +516,7 @@ PluginComponent {
                         Column {
                             id: innerLayoutV
                             anchors.centerIn: parent
-                            spacing: Theme.spacingXS
+                            spacing: root.itemSpacing
 
                             Repeater {
                                 model: ScriptModel {
@@ -560,7 +565,7 @@ PluginComponent {
             }
             readonly property real entryIconSize: Theme.barIconSize(root.barThickness, undefined, root.barConfig?.maximizeWidgetIcons, root.barConfig?.iconScale)
 
-            width: root.compactMode ? entryIconSize + Theme.spacingXS * 2 : entryIconSize + Theme.spacingXS * 3 + 120
+            width: root.compactMode ? entryIconSize + root.iconPadding * 2 : entryIconSize + root.iconPadding * 3 + 120
             height: Math.round((root.iconCellSize + root.widgetThickness) / 2)
 
             Rectangle {
@@ -578,7 +583,7 @@ PluginComponent {
                 IconImage {
                     id: appIcon
                     anchors.left: parent.left
-                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : Theme.spacingXS
+                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter
                     width: appEntry.entryIconSize
                     height: appEntry.entryIconSize
@@ -600,7 +605,7 @@ PluginComponent {
 
                 DankIcon {
                     anchors.left: parent.left
-                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : Theme.spacingXS
+                    anchors.leftMargin: root.compactMode ? Math.round((parent.width - appEntry.entryIconSize) / 2) : root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter
                     size: appEntry.entryIconSize
                     name: "sports_esports"
@@ -625,9 +630,9 @@ PluginComponent {
 
                 StyledText {
                     anchors.left: appIcon.right
-                    anchors.leftMargin: Theme.spacingXS
+                    anchors.leftMargin: root.iconPadding
                     anchors.right: parent.right
-                    anchors.rightMargin: Theme.spacingS
+                    anchors.rightMargin: root.iconPadding
                     anchors.verticalCenter: parent.verticalCenter
                     visible: !root.compactMode
                     text: appEntry.windowTitle
