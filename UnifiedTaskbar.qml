@@ -273,10 +273,10 @@ PluginComponent {
 
     readonly property var groupedWorkspaces: {
         CompositorService.toplevelsChanged;
-        NiriService.allWorkspaces;
-        Hyprland.workspaces;
-        I3.workspaces;
-        DwlService.stateChanged;
+        if (typeof NiriService !== 'undefined') NiriService.allWorkspaces;
+        if (typeof Hyprland !== 'undefined') Hyprland.workspaces;
+        if (typeof I3 !== 'undefined') I3.workspaces;
+        if (typeof DwlService !== 'undefined') DwlService.stateChanged;
         return groupByWorkspace();
     }
 
