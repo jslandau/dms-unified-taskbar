@@ -2,7 +2,7 @@
     "id": "unifiedTaskbar",
     "name": "Unified Taskbar",
     "description": "Running apps grouped by workspace with per-workspace pills",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "author": "Joshua Landau",
     "type": "widget",
     "capabilities": ["dankbar-widget", "compositor-integration"],
