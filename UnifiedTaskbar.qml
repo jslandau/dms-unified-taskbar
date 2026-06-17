@@ -232,6 +232,7 @@ PluginComponent {
                         appGroups.set(moddedId, {
                             "isGrouped": true,
                             "appId": moddedId,
+                            "entryKey": moddedId,
                             "windows": [],
                             "toplevel": w
                         });
@@ -240,9 +241,10 @@ PluginComponent {
                 });
                 entries = Array.from(appGroups.values());
             } else {
-                entries = wsWindows.map(w => ({
+                entries = wsWindows.map((w, idx) => ({
                     "isGrouped": false,
                     "appId": Paths.moddedAppId(w.appId || "unknown"),
+                    "entryKey": Paths.moddedAppId(w.appId || "unknown") + "::" + idx,
                     "windows": [w],
                     "toplevel": w
                 }));
@@ -455,6 +457,7 @@ PluginComponent {
                             Repeater {
                                 model: ScriptModel {
                                     values: wsPill.wsData ? wsPill.wsData.entries : []
+                                    objectProp: "entryKey"
                                 }
 
                                 delegate: appEntryDelegate
@@ -521,6 +524,7 @@ PluginComponent {
                             Repeater {
                                 model: ScriptModel {
                                     values: wsPillV.wsData ? wsPillV.wsData.entries : []
+                                    objectProp: "entryKey"
                                 }
 
                                 delegate: appEntryDelegate
