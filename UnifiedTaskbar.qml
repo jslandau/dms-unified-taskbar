@@ -272,7 +272,7 @@ PluginComponent {
         NiriService.allWorkspaces;
         Hyprland.workspaces;
         I3.workspaces;
-        DwlService.stateChanged;
+        if (CompositorService.isDwl) DwlService.stateChanged;
         return groupByWorkspace();
     }
 
