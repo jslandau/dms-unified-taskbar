@@ -518,6 +518,7 @@ PluginComponent {
 
                         Column {
                             id: innerLayoutV
+                            objectName: "verticalEntries"
                             anchors.centerIn: parent
                             spacing: root.itemSpacing
 
@@ -560,6 +561,7 @@ PluginComponent {
                 return null;
             }
             readonly property bool isCoreApp: coreAppData !== null
+            readonly property bool isVerticalEntry: parent && parent.objectName === "verticalEntries"
             property bool isFocused: {
                 if (!entryData) return false;
                 for (let i = 0; i < entryData.windows.length; i++) {
@@ -570,7 +572,7 @@ PluginComponent {
             readonly property real entryIconSize: Theme.barIconSize(root.barThickness, undefined, root.barConfig?.maximizeWidgetIcons, root.barConfig?.iconScale)
 
             width: root.compactMode ? entryIconSize + root.iconPadding * 2 : entryIconSize + root.iconPadding * 3 + 120
-            height: Math.round((root.iconCellSize + root.widgetThickness) / 2)
+            height: root.compactMode && isVerticalEntry ? entryIconSize + root.iconPadding * 2 : Math.round((root.iconCellSize + root.widgetThickness) / 2)
 
             Rectangle {
                 id: entryBackground
