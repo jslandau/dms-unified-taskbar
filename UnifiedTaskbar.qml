@@ -46,6 +46,7 @@ PluginComponent {
 
     readonly property real iconPadding: pluginData.iconPadding !== undefined ? pluginData.iconPadding : Theme.spacingS
     readonly property real itemSpacing: pluginData.itemSpacing !== undefined ? pluginData.itemSpacing : Theme.spacingXS
+    readonly property real workspaceSpacing: pluginData.workspaceSpacing !== undefined ? pluginData.workspaceSpacing : Theme.spacingXS
 
     readonly property real iconCellSize: widgetThickness - ((barConfig?.removeWidgetPadding ?? false) ? 0 : Theme.snap((barConfig?.widgetPadding ?? 12) * (widgetThickness / 30), 1)) * 2
 
@@ -411,7 +412,7 @@ PluginComponent {
 
             Row {
                 id: hLayout
-                spacing: root.itemSpacing
+                spacing: root.workspaceSpacing
                 anchors.centerIn: parent
 
                 Repeater {
@@ -476,7 +477,7 @@ PluginComponent {
 
             Column {
                 id: vLayout
-                spacing: root.iconPadding
+                spacing: root.workspaceSpacing
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
 
