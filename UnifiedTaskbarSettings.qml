@@ -56,4 +56,13 @@ PluginSettings {
         maximum: 10
         defaultValue: 2
     }
+
+    SliderSetting {
+        settingKey: "workspaceSpacing"
+        label: "Workspace Spacing"
+        description: "Space between workspace pills"
+        minimum: 0
+        maximum: 20
+        defaultValue: 4
+    }
 }
