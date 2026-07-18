@@ -25,6 +25,7 @@ A [Dank Material Shell](https://danklinux.com) plugin that displays running appl
 | Filled Pills (Vertical) | Use solid filled workspace pills instead of outlined borders |
 | Icon Padding | Padding around the icon group inside each workspace pill. Set to 0 for a flush look |
 | Item Spacing | Spacing between individual app icons within a workspace |
+| Workspace Spacing | Spacing between workspace pills |
 
 ## Installation
 
