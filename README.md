@@ -51,6 +51,14 @@ dms restart
 
 - Dank Material Shell >= 1.2.0
 
+## Development / Testing
+
+Run the dependency-free workspace-switching regression test with Node.js 18 or newer (it uses the built-in `node:test` runner):
+
+```bash
+node --test tests/workspace-switching.test.js
+```
+
 ## License
 
 MIT

@@ -264,7 +264,7 @@ PluginComponent {
     function switchToWorkspace(ws) {
         if (!ws) return;
         if (CompositorService.isNiri) {
-            NiriService.switchToWorkspace(ws.idx);
+            NiriService.switchToWorkspace(ws.id);
         } else if (CompositorService.isHyprland) {
             Hyprland.dispatch(`workspace ${ws.id}`);
         } else if (CompositorService.isDwl) {
